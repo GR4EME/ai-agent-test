@@ -60,4 +60,4 @@ describe('Logger', () => {
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('{"key":"value"}'));
     });
   });
-}); 
+});

@@ -1,51 +1,80 @@
 import { TopRatedMovies } from '../tmdbTypes.js';
-import { BaseTool } from './baseTool.js';
+import { ToolDefinition, validateInput, formatSuccess } from './baseTool.js';
 import { TmdbClient } from '../utils/tmdbClient.js';
-import { TopRatedMoviesInputSchema, TopRatedMoviesInput, TopRatedMoviesOutputSchema, TopRatedMoviesOutput } from './schemas.js';
+import {
+  TopRatedMoviesInputSchema,
+  TopRatedMoviesInput,
+  TopRatedMoviesOutputSchema,
+  TopRatedMoviesOutput,
+} from './schemas.js';
 
-export class TopRatedMoviesTool extends BaseTool {
-  constructor(tmdbFetch: TmdbClient) {
-    super(tmdbFetch, {
-      name: 'get_top_rated_movies',
-      title: 'Get Top Rated Movies',
-      description: 'Returns a list of top-rated movies.',
-      inputSchema: TopRatedMoviesInputSchema.shape,
-    });
-  }
+interface TopRatedMovieItem {
+  title: string;
+  release_date?: string;
+  vote_average: number;
+}
 
-  async execute(input: unknown): Promise<{ content: Array<{ type: 'text'; text: string }>; isError?: boolean; data?: TopRatedMoviesOutput }> {
-    const { limit = 10 } = this.validateInput<TopRatedMoviesInput>(input);
+interface FormattedMovie {
+  title: string;
+  releaseDate?: string;
+  rating: number;
+  overview: undefined;
+}
 
-    const data = await this.tmdbFetch<TopRatedMovies>('/movie/top_rated', { page: '1' });
+const formatTopRatedMovies = (movies: TopRatedMovieItem[], limit: number) =>
+  movies.slice(0, limit).map((m) => ({
+    title: m.title,
+    releaseDate: m.release_date,
+    rating: m.vote_average,
+    overview: undefined,
+  }));
+
+const formatMoviesList = (movies: FormattedMovie[]) =>
+  movies
+    .map(
+      (m) =>
+        `${m.title} (${m.releaseDate ? m.releaseDate.substring(0, 4) : 'N/A'}) - Rating: ${m.rating}`
+    )
+    .join('\n');
+
+const executeTopRatedMovies =
+  (tmdbClient: TmdbClient) =>
+  async (
+    input: unknown
+  ): Promise<{
+    content: Array<{ type: 'text'; text: string }>;
+    isError?: boolean;
+    data?: TopRatedMoviesOutput;
+  }> => {
+    const validator = validateInput<TopRatedMoviesInput>(TopRatedMoviesInputSchema.shape);
+    const successFormatter = formatSuccess('get_top_rated_movies');
+
+    const { limit = 10 } = validator(input);
+    const data = await tmdbClient<TopRatedMovies>('/movie/top_rated', { page: '1' });
+
     if (!data.results || data.results.length === 0) {
-      return this.formatSuccess('No top-rated movies found.');
+      return successFormatter('No top-rated movies found.');
     }
 
-    const movies = data.results
-      .slice(0, limit)
-      .map((m) => ({
-        title: m.title,
-        releaseDate: m.release_date,
-        rating: m.vote_average,
-        overview: undefined, // Not available in TopRatedMovies
-      }));
-
+    const movies = formatTopRatedMovies(data.results, limit);
     const result: TopRatedMoviesOutput = {
       movies,
       totalCount: data.results.length,
     };
 
-    // Validate output
     TopRatedMoviesOutputSchema.parse(result);
-
-    const list = movies
-      .map((m) => `${m.title} (${m.releaseDate ? m.releaseDate.substring(0, 4) : 'N/A'}) - Rating: ${m.rating}`)
-      .join('\n');
-
+    const list = formatMoviesList(movies);
     const text = `Top Rated Movies (showing up to ${limit}):\n${list}`;
-    
-    return { ...this.formatSuccess(text), data: result };
-  }
-}
 
- 
+    return { ...successFormatter(text), data: result };
+  };
+
+export const topRatedMoviesToolDefinition: ToolDefinition = {
+  config: {
+    name: 'get_top_rated_movies',
+    title: 'Get Top Rated Movies',
+    description: 'Returns a list of top-rated movies.',
+    inputSchema: TopRatedMoviesInputSchema.shape,
+  },
+  execute: executeTopRatedMovies,
+};

@@ -61,4 +61,4 @@ export interface TopRatedMovies {
     release_date: string;
     vote_average: number;
   }>;
-} 
+}

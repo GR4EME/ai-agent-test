@@ -59,7 +59,7 @@ This is a **Model Context Protocol (MCP) server** that provides movie and actor 
 
 **Caching**: Request deduplication and response caching with configurable TTL.
 
-**Tool Architecture**: All tools extend `BaseTool` class which provides common MCP registration and error handling patterns.
+**Tool Architecture**: All tools use functional composition with `ToolDefinition` objects and pure functions for MCP registration and error handling patterns.
 
 **Configuration**: Environment-based configuration with runtime validation using Zod schemas.
 

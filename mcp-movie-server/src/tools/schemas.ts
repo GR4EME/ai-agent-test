@@ -40,30 +40,39 @@ export type MoviesByActorInput = z.infer<typeof MoviesByActorInputSchema>;
 
 export const MoviesByActorOutputSchema = z.object({
   actorName: z.string(),
-  movies: z.array(z.object({
-    title: z.string(),
-    releaseDate: z.string().optional(),
-    rating: z.number().optional(),
-    overview: z.string().optional(),
-  })),
+  movies: z.array(
+    z.object({
+      title: z.string(),
+      releaseDate: z.string().optional(),
+      rating: z.number().optional(),
+      overview: z.string().optional(),
+    })
+  ),
 });
 export type MoviesByActorOutput = z.infer<typeof MoviesByActorOutputSchema>;
 
 // Top Rated Movies
 export const TopRatedMoviesInputSchema = z.object({
-  limit: z.number().min(1).max(50).optional().describe('Number of movies to return (default: 10, max: 50).'),
+  limit: z
+    .number()
+    .min(1)
+    .max(50)
+    .optional()
+    .describe('Number of movies to return (default: 10, max: 50).'),
 });
 export type TopRatedMoviesInput = z.infer<typeof TopRatedMoviesInputSchema>;
 
 export const TopRatedMoviesOutputSchema = z.object({
-  movies: z.array(z.object({
-    title: z.string(),
-    releaseDate: z.string().optional(),
-    rating: z.number(),
-    overview: z.string().optional(),
-  })),
+  movies: z.array(
+    z.object({
+      title: z.string(),
+      releaseDate: z.string().optional(),
+      rating: z.number(),
+      overview: z.string().optional(),
+    })
+  ),
   totalCount: z.number(),
 });
 export type TopRatedMoviesOutput = z.infer<typeof TopRatedMoviesOutputSchema>;
 
-// Add similar schemas for other tools as needed 
+// Add similar schemas for other tools as needed

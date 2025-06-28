@@ -4,22 +4,19 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   injectGlobals: true,
   transform: {
-    '^.+\\.ts$': ['ts-jest', {
-      useESM: true,
-    }],
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
   },
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(@modelcontextprotocol)/)',
-  ],
+  transformIgnorePatterns: ['node_modules/(?!(@modelcontextprotocol)/)'],
   testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/index.ts',
-  ],
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/index.ts'],
   coverageThreshold: {
     global: {
       branches: 70,
@@ -28,4 +25,4 @@ module.exports = {
       statements: 70,
     },
   },
-}; 
+};

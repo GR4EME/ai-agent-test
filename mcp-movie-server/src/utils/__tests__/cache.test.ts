@@ -3,12 +3,12 @@ import { Cache } from '../cache.js';
 
 describe('Cache', () => {
   let testCache: Cache;
-  
+
   beforeEach(() => {
     jest.useFakeTimers();
     testCache = new Cache();
   });
-  
+
   afterEach(() => {
     jest.useRealTimers();
   });
@@ -37,4 +37,4 @@ describe('Cache', () => {
     testCache.clear();
     expect(testCache.size()).toBe(0);
   });
-}); 
+});

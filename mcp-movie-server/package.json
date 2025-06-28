@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "format": "npx prettier --write .",
+    "lint": "npx eslint --fix src",
+    "build": "tsc",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
     "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch",
     "test:coverage": "NODE_OPTIONS='--experimental-vm-modules' jest --coverage",
-    "lint": "npx eslint --fix src",
-    "build": "tsc",
     "start": "node build/index.js",
     "inspect": "npx @modelcontextprotocol/inspector node build/index.js"
   },

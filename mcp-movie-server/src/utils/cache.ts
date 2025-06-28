@@ -37,7 +37,7 @@ export class Cache {
   private stats = {
     hits: 0,
     misses: 0,
-    evictions: 0
+    evictions: 0,
   };
   private cleanupTimer?: ReturnType<typeof setInterval>;
   private currentMemoryUsage = 0;
@@ -48,16 +48,16 @@ export class Cache {
       maxMemoryMB: config.maxMemoryMB ?? 50,
       defaultTtlMs: config.defaultTtlMs ?? 5 * 60 * 1000,
       cleanupIntervalMs: config.cleanupIntervalMs ?? 60 * 1000,
-      enableStats: config.enableStats ?? true
+      enableStats: config.enableStats ?? true,
     };
 
     // Start periodic cleanup
     this.startCleanupTimer();
-    
+
     logger.debug('Cache initialized', {
       maxEntries: this.config.maxEntries,
       maxMemoryMB: this.config.maxMemoryMB,
-      defaultTtlMs: this.config.defaultTtlMs
+      defaultTtlMs: this.config.defaultTtlMs,
     });
   }
 
@@ -88,7 +88,7 @@ export class Cache {
       ttl: entryTtl,
       accessCount: 1,
       lastAccessed: now,
-      estimatedSize
+      estimatedSize,
     };
 
     this.cache.set(key, entry);
@@ -99,13 +99,13 @@ export class Cache {
       ttlMs: entryTtl,
       estimatedSizeBytes: estimatedSize,
       totalEntries: this.cache.size,
-      memoryUsageMB: Math.round(this.currentMemoryUsage / (1024 * 1024) * 100) / 100
+      memoryUsageMB: Math.round((this.currentMemoryUsage / (1024 * 1024)) * 100) / 100,
     });
   }
 
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    
+
     if (!entry) {
       this.stats.misses++;
       return null;
@@ -113,7 +113,7 @@ export class Cache {
 
     const now = Date.now();
     const isExpired = now - entry.timestamp > entry.ttl;
-    
+
     if (isExpired) {
       this.cache.delete(key);
       this.currentMemoryUsage -= entry.estimatedSize;
@@ -152,7 +152,7 @@ export class Cache {
     const totalRequests = this.stats.hits + this.stats.misses;
     const hitRatio = totalRequests > 0 ? this.stats.hits / totalRequests : 0;
     const maxMemoryBytes = this.config.maxMemoryMB * 1024 * 1024;
-    
+
     return {
       entries: this.cache.size,
       hits: this.stats.hits,
@@ -161,9 +161,9 @@ export class Cache {
       memoryUsage: {
         current: this.currentMemoryUsage,
         max: maxMemoryBytes,
-        percentage: Math.round((this.currentMemoryUsage / maxMemoryBytes) * 100 * 100) / 100
+        percentage: Math.round((this.currentMemoryUsage / maxMemoryBytes) * 100 * 100) / 100,
       },
-      hitRatio: Math.round(hitRatio * 100 * 100) / 100
+      hitRatio: Math.round(hitRatio * 100 * 100) / 100,
     };
   }
 
@@ -176,28 +176,28 @@ export class Cache {
    */
   private estimateSize(data: unknown): number {
     if (data === null || data === undefined) return 8;
-    
+
     if (typeof data === 'string') {
       return data.length * 2; // Assuming UTF-16
     }
-    
+
     if (typeof data === 'number') {
       return 8;
     }
-    
+
     if (typeof data === 'boolean') {
       return 4;
     }
-    
+
     if (Array.isArray(data)) {
       return data.reduce((sum, item) => sum + this.estimateSize(item), 0) + 24;
     }
-    
+
     if (typeof data === 'object') {
       const json = JSON.stringify(data);
       return json.length * 2 + 24; // JSON size + object overhead
     }
-    
+
     return 24; // Default object overhead
   }
 
@@ -221,11 +221,11 @@ export class Cache {
         this.cache.delete(oldestKey);
         this.currentMemoryUsage -= entry.estimatedSize;
         this.stats.evictions++;
-        
+
         logger.debug('Cache entry evicted (LRU)', {
           key: oldestKey,
           lastAccessed: new Date(oldestTime).toISOString(),
-          freedBytes: entry.estimatedSize
+          freedBytes: entry.estimatedSize,
         });
       }
     }
@@ -253,7 +253,7 @@ export class Cache {
       logger.debug('Cache cleanup completed', {
         expiredEntries: expiredCount,
         freedMemoryBytes: freedMemory,
-        remainingEntries: this.cache.size
+        remainingEntries: this.cache.size,
       });
     }
   }
@@ -262,7 +262,7 @@ export class Cache {
     this.cleanupTimer = setInterval(() => {
       this.cleanup();
     }, this.config.cleanupIntervalMs);
-    
+
     // Don't keep the process alive just for cleanup
     this.cleanupTimer.unref();
   }
@@ -286,5 +286,5 @@ export const cache = new Cache({
   maxMemoryMB: 50,
   defaultTtlMs: 5 * 60 * 1000, // 5 minutes
   cleanupIntervalMs: 60 * 1000, // 1 minute
-  enableStats: true
-}); 
+  enableStats: true,
+});

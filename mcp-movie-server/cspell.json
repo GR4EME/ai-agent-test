@@ -882,16 +882,6 @@
     "zipkin",
     "zod"
   ],
-  "ignorePaths": [
-    "node_modules/**",
-    "build/**",
-    "dist/**",
-    "coverage/**",
-    "*.min.js",
-    "*.map"
-  ],
-  "ignoreRegExpList": [
-    "/\\b[A-Za-z0-9]{32,}\\b/g",
-    "/\\b[A-Fa-f0-9]{40,}\\b/g"
-  ]
+  "ignorePaths": ["node_modules/**", "build/**", "dist/**", "coverage/**", "*.min.js", "*.map"],
+  "ignoreRegExpList": ["/\\b[A-Za-z0-9]{32,}\\b/g", "/\\b[A-Fa-f0-9]{40,}\\b/g"]
 }

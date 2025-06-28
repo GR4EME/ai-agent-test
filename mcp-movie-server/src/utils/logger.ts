@@ -27,9 +27,11 @@ export class Logger {
 
   constructor(level: string = 'info', transport?: LogTransport) {
     this.level = LogLevel[level.toUpperCase() as keyof typeof LogLevel] ?? LogLevel.INFO;
-    this.transport = transport || ((level, message, context) => {
-      console.error(this.formatMessage(level, message, context));
-    });
+    this.transport =
+      transport ||
+      ((level, message, context) => {
+        console.error(this.formatMessage(level, message, context));
+      });
   }
 
   private shouldLog(level: LogLevel): boolean {
@@ -72,4 +74,4 @@ export class Logger {
   }
 }
 
-export const logger = new Logger(process.env.LOG_LEVEL); 
+export const logger = new Logger(process.env.LOG_LEVEL);
