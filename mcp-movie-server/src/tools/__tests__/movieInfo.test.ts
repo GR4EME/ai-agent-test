@@ -1,14 +1,16 @@
+import { describe, it, expect, jest } from '@jest/globals';
 import { MovieInfoTool } from '../movieInfo.js';
+import type { TmdbClient } from '../../utils/tmdbClient.js';
 
 describe('MovieInfoTool', () => {
-  const mockTmdbFetch = jest.fn();
+  const mockTmdbFetch = jest.fn() as unknown as TmdbClient;
   const tool = new MovieInfoTool(mockTmdbFetch);
 
   it('returns movie info for a valid title', async () => {
-    mockTmdbFetch.mockImplementationOnce(() => Promise.resolve({
+    (mockTmdbFetch as any).mockImplementationOnce(() => Promise.resolve({
       results: [{ id: 1 }],
     }));
-    mockTmdbFetch.mockImplementationOnce(() => Promise.resolve({
+    (mockTmdbFetch as any).mockImplementationOnce(() => Promise.resolve({
       title: 'Inception',
       release_date: '2010-07-16',
       overview: 'A mind-bending thriller.',
@@ -27,7 +29,7 @@ describe('MovieInfoTool', () => {
   });
 
   it('returns an error if no movie is found', async () => {
-    mockTmdbFetch.mockImplementationOnce(() => Promise.resolve({ results: [] }));
+    (mockTmdbFetch as any).mockImplementationOnce(() => Promise.resolve({ results: [] }));
     const result = await tool.execute({ title: 'Nonexistent Movie' });
     expect(result.isError).not.toBe(true);
     expect(result.content[0].text).toMatch(/No movie found/);

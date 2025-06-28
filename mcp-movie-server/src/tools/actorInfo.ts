@@ -1,7 +1,6 @@
 import { PersonSearchResult, PersonDetails } from '../tmdbTypes.js';
 import { BaseTool } from './baseTool.js';
 import { TmdbClient } from '../utils/tmdbClient.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { ActorInfoInputSchema, ActorInfoInput, ActorInfoOutputSchema, ActorInfoOutput } from './schemas.js';
 
 export class ActorInfoTool extends BaseTool {

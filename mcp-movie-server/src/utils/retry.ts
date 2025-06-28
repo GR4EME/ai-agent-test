@@ -1,4 +1,5 @@
 
+import { setTimeout } from 'node:timers/promises';
 import { logger } from './logger.js';
 
 // Defines a function that can be retried
@@ -38,7 +39,7 @@ export async function retry<T>(
           delay: `${delay}ms`,
           error: error instanceof Error ? error.message : String(error),
         });
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await setTimeout(delay);
       } else {
         // If it's not a retryable error or we've run out of retries, break the loop.
         break;

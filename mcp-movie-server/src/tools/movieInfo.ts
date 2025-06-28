@@ -1,7 +1,6 @@
 import { MovieSearchResult, MovieDetails, Genre } from '../tmdbTypes.js';
 import { BaseTool } from './baseTool.js';
 import { TmdbClient } from '../utils/tmdbClient.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { MovieInfoInputSchema, MovieInfoInput, MovieInfoOutputSchema, MovieInfoOutput } from './schemas.js';
 
 export class MovieInfoTool extends BaseTool {

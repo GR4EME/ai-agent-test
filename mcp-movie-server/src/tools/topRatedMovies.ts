@@ -1,7 +1,6 @@
 import { TopRatedMovies } from '../tmdbTypes.js';
 import { BaseTool } from './baseTool.js';
 import { TmdbClient } from '../utils/tmdbClient.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { TopRatedMoviesInputSchema, TopRatedMoviesInput, TopRatedMoviesOutputSchema, TopRatedMoviesOutput } from './schemas.js';
 
 export class TopRatedMoviesTool extends BaseTool {

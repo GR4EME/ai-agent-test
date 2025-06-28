@@ -82,7 +82,7 @@ export async function tmdbFetch<T>(
     cache.set(cacheKey, data, cacheTtlMs);
     return data;
   } catch (error) {
-    logger.error('TMDb API request failed after retries', error, { 
+    logger.error('TMDb API request failed after retries', error instanceof Error ? error : new Error(String(error)), { 
       requestId, 
       endpoint, 
       attempts: retries 

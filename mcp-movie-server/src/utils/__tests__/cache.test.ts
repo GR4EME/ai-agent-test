@@ -1,9 +1,16 @@
+import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { Cache } from '../cache.js';
 
 describe('Cache', () => {
   let testCache: Cache;
+  
   beforeEach(() => {
+    jest.useFakeTimers();
     testCache = new Cache();
+  });
+  
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it('should store and retrieve values', () => {

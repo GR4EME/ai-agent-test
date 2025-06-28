@@ -1,11 +1,12 @@
+import { describe, it, expect, beforeEach, afterEach, jest } from '@jest/globals';
 import { Logger } from '../logger.js';
 
 describe('Logger', () => {
   let logger: Logger;
-  let consoleSpy: jest.SpyInstance;
+  let consoleSpy: ReturnType<typeof jest.spyOn>;
 
   beforeEach(() => {
-    consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     logger = new Logger('debug');
   });
 

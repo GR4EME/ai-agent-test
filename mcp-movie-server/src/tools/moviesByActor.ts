@@ -1,7 +1,6 @@
 import { PersonSearchResult, MovieCredit } from '../tmdbTypes.js';
 import { BaseTool } from './baseTool.js';
 import { TmdbClient } from '../utils/tmdbClient.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { MoviesByActorInputSchema, MoviesByActorInput, MoviesByActorOutputSchema, MoviesByActorOutput } from './schemas.js';
 
 export class MoviesByActorTool extends BaseTool {
