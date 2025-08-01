@@ -25,4 +25,11 @@ module.exports = {
       statements: 30,
     },
   },
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: 'coverage',
+      outputName: 'junit.xml',
+    }],
+  ],
 };
