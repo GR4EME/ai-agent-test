@@ -72,11 +72,12 @@ This server has been enhanced with several production-ready features:
    nvm use  # Uses Node.js version from .nvmrc
    ```
 3. Install dependencies:
+
    ```bash
    npm install
    ```
 
-3. Create a `.env` file with your TMDb API key:
+4. Create a `.env` file with your TMDb API key:
    ```
    TMDB_API_KEY=your_api_key_here
    ```
