@@ -1,0 +1,161 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs when a new workflow run is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+        cache-dependency-path: mcp-movie-server/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd mcp-movie-server
+        npm ci --prefer-offline --no-audit
+      timeout-minutes: 5
+
+    - name: Cache TypeScript build
+      uses: actions/cache@v4
+      with:
+        path: mcp-movie-server/build
+        key: ${{ runner.os }}-build-${{ hashFiles('mcp-movie-server/src/**/*', 'mcp-movie-server/tsconfig.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-
+
+    # Code Quality Checks (run in parallel via separate steps)
+    - name: Check code formatting
+      run: |
+        cd mcp-movie-server
+        npm run format
+        git diff --exit-code
+      timeout-minutes: 2
+
+    - name: Run ESLint
+      run: |
+        cd mcp-movie-server
+        npm run lint
+      timeout-minutes: 3
+
+    - name: TypeScript compilation and type checking
+      run: |
+        cd mcp-movie-server
+        npm run build
+      timeout-minutes: 3
+
+    # Testing
+    - name: Run tests with coverage
+      run: |
+        cd mcp-movie-server
+        npm run test:coverage
+      env:
+        NODE_ENV: test
+      timeout-minutes: 5
+
+    - name: Upload test results
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: Jest Tests
+        path: mcp-movie-server/coverage/junit.xml
+        reporter: jest-junit
+        fail-on-error: true
+
+    - name: Upload coverage to Codecov
+      if: success()
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./mcp-movie-server/coverage/lcov.info
+        flags: unit-tests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+    - name: Upload build artifacts
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-output
+        path: mcp-movie-server/build/
+        retention-days: 7
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: ci
+    if: success()
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+        cache: 'npm'
+        cache-dependency-path: mcp-movie-server/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd mcp-movie-server
+        npm ci --prefer-offline --no-audit
+      timeout-minutes: 5
+
+    - name: Run npm audit
+      run: |
+        cd mcp-movie-server
+        # Allow moderate vulnerabilities, fail on high/critical
+        npm audit --audit-level high || {
+          echo "High or critical vulnerabilities found. Please review:"
+          npm audit --audit-level moderate
+          exit 1
+        }
+      timeout-minutes: 3
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript
+        queries: security-and-quality
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "security"
+
+  # Job to check if all required checks passed
+  all-checks:
+    name: All Checks Passed
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [ci, security]
+    steps:
+      - name: Check all jobs
+        run: |
+          if [[ "${{ needs.ci.result }}" != "success" || "${{ needs.security.result }}" != "success" ]]; then
+            echo "One or more required checks failed"
+            exit 1
+          fi
+          echo "All checks passed successfully"
