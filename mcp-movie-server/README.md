@@ -46,14 +46,32 @@ This server has been enhanced with several production-ready features:
 ### 6. **Testing Infrastructure**
 
 - Jest testing framework with TypeScript support
-- Test coverage reporting
+- Test coverage reporting with 70% threshold
 - Example tests for utilities
+
+### 7. **CI/CD Pipeline**
+
+- Automated GitHub Actions workflow for testing and quality checks
+- Multi-job pipeline with dependency management and security scanning
+- Branch protection with required status checks
+- Automated dependency updates via Dependabot
+- Code quality enforcement with ESLint and Prettier
+- Security auditing with npm audit and CodeQL analysis
+
+## Requirements
+
+- Node.js 22.x (specified in `.nvmrc`)
+- npm or compatible package manager
+- TMDb API key
 
 ## Installation
 
 1. Clone the repository
-2. Install dependencies:
-
+2. Use the correct Node.js version:
+   ```bash
+   nvm use  # Uses Node.js version from .nvmrc
+   ```
+3. Install dependencies:
    ```bash
    npm install
    ```
@@ -193,8 +211,25 @@ The project includes a comprehensive testing setup:
 2. Create a feature branch
 3. Make your changes
 4. Add tests for new functionality
-5. Ensure all tests pass
+5. Ensure all tests pass locally:
+   ```bash
+   npm test
+   npm run lint
+   npm run build
+   ```
 6. Submit a pull request
+
+### Automated Checks
+
+All pull requests automatically run through our CI pipeline which includes:
+
+- **Code Quality**: ESLint linting and Prettier formatting checks
+- **Type Safety**: TypeScript compilation and type checking
+- **Testing**: Full test suite with coverage reporting (70% minimum)
+- **Security**: npm audit and CodeQL security analysis
+- **Build Verification**: Ensures the project builds successfully
+
+Pull requests must pass all automated checks before merging. The CI pipeline runs on Node.js 22.x to match the project requirements.
 
 ## License
 
