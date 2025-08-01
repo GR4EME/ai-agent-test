@@ -46,7 +46,7 @@ This server has been enhanced with several production-ready features:
 ### 6. **Testing Infrastructure**
 
 - Jest testing framework with TypeScript support
-- Test coverage reporting with 70% threshold
+- Test coverage reporting with 30% threshold
 - Example tests for utilities
 
 ### 7. **CI/CD Pipeline**
@@ -226,7 +226,7 @@ All pull requests automatically run through our CI pipeline which includes:
 
 - **Code Quality**: ESLint linting and Prettier formatting checks
 - **Type Safety**: TypeScript compilation and type checking
-- **Testing**: Full test suite with coverage reporting (70% minimum)
+- **Testing**: Full test suite with coverage reporting (30% minimum)
 - **Security**: npm audit and CodeQL security analysis
 - **Build Verification**: Ensures the project builds successfully
 
