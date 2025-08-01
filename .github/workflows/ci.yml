@@ -86,7 +86,7 @@ jobs:
 
     - name: Upload coverage to Codecov
       if: success()
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         file: ./mcp-movie-server/coverage/lcov.info
         flags: unit-tests
