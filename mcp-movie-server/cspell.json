@@ -218,6 +218,7 @@
     "documentation",
     "done",
     "dotenv",
+    "dorny",
     "double",
     "downgrade",
     "downstream",
@@ -884,6 +885,6 @@
     "anthropics",
     "npmjs"
   ],
-  "ignorePaths": ["node_modules/**", "build/**", "dist/**", "coverage/**", "*.min.js", "*.map"],
+  "ignorePaths": ["node_modules/**", "build/**", "dist/**", "coverage/**", "*.min.js", "*.map", ".gitignore"],
   "ignoreRegExpList": ["/\\b[A-Za-z0-9]{32,}\\b/g", "/\\b[A-Fa-f0-9]{40,}\\b/g"]
 }
