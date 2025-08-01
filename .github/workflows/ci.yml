@@ -92,7 +92,8 @@ jobs:
         flags: unit-tests
         name: codecov-umbrella
         fail_ci_if_error: false
-        token: ${{ secrets.CODECOV_TOKEN || '' }}
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - name: Upload build artifacts
       if: success()
