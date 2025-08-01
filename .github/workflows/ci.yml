@@ -109,6 +109,9 @@ jobs:
     timeout-minutes: 10
     needs: ci
     if: success()
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
     - name: Checkout code
